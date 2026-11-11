@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "default_provider": "deepseek",
+  "providers": {
+    "deepseek": {
+      "enabled": true,
+      "default_model": "deepseek-flash",
+      "base_url": "https://api.deepseek.com",
+      "timeout_seconds": 60.0,
+      "generation_defaults": {
+        "temperature": 0.2,
+        "max_output_tokens": 2048
+      },
+      "known_models": ["deepseek-flash", "deepseek-v4-pro"],
+      "tasks": {
+        "paper_extraction": {},
+        "literature_synthesis": {},
+        "research_gap_analysis": {},
+        "methodology_design": {},
+        "section_drafting": {},
+        "academic_review": {},
+        "diagram_generation": {}
+      }
+    }
+  }
+}

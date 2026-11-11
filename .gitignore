@@ -1,0 +1,99 @@
+# =============================================================
+# ResearchForge — Git exclusions (RF-003)
+# Principle: ignore generated throwaway artifacts and secrets.
+# NEVER ignore research source documents (DOCX/MD), manuscript
+# content, literature/evidence records, or editable diagram
+# sources (.mmd, draw.io XML).
+# =============================================================
+
+# --- Python bytecode and cache ---
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# --- Build and distribution artifacts ---
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+
+# --- Secrets: ignore real env files, keep the example template ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# --- IDE / editor configuration ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- OS-generated files ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# --- Logs and temporary files (log files are generated output) ---
+logs/*.log
+*.log
+*.tmp
+*.bak
+
+# --- Generated PDFs (reproducible exports; editable sources stay tracked) ---
+outputs/pdf/*.pdf
+
+# --- TeX auxiliary build noise (manuscript/*.tex itself stays tracked) ---
+**/*.aux
+**/*.out
+**/*.toc
+**/*.synctex.gz
+**/*.bbl
+
+# --- OneDrive/office lock files (transient, not content) ---
+~$*
+
+# =============================================================
+# GitHub public/private software repository boundary
+# Keep personal research workspace and generated records local.
+# =============================================================
+
+# Research documents and evidence
+/sources/
+/research/
+/manuscript/
+/outputs/
+/diagrams/
+/prompts/
+
+# Research project tracking and original brief
+/Enhancing walkability - NaviMumbai.docx
+/TASKS.md
+/progress.md
+
+# Local runtime data
+/logs/
+*.lock
+*.jsonl
+
+# Local application state and generated files
+*.docx
+*.pdf
+*.sqlite
+*.db
+
+
+# Local publishing backups and private project instructions
+/.gitignore.pre-github-backup
+/AGENTS.md
+/PROJECT.md

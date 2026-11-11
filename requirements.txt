@@ -1,0 +1,24 @@
+# =============================================================
+# ResearchForge — Python dependencies (RF-003)
+# Policy: minimal, justified dependencies only. CLI-first, stdlib-first.
+# Requires Python 3.11+.
+# =============================================================
+#
+# No third-party packages are required at this phase (Phases 0-1).
+# The CLI (RF-007+), document management and imports use only the
+# standard library: argparse, json, logging, pathlib, csv, bib parsing
+# via dedicated stdlib implementable helpers.
+#
+# Deferred dependencies (documented decision — do NOT add until the
+# owning task is explicitly approved):
+#   RF-012  DeepSeek adapter        -> stdlib urllib/urllib.request is
+#                                      sufficient for the REST adapter; add
+#                                      a third-party HTTP client only if
+#                                      needed for streaming/retries UX.
+#   RF-021  LaTeX export            -> LaTeX tooling deferred.
+#   RF-022  DOCX export             -> document-processing library deferred.
+#   Any SQLite persistence           -> deferred repeatedly (PROJECT.md);
+#                                      consider only when structured
+#                                      persistence becomes necessary.
+# None of these are machine-learning frameworks, web frameworks or
+# database drivers, in line with the approved architecture.

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="rf-token" content="__RF_TOKEN__">
+  <meta name="description" content="ResearchForge local research command centre: source library, evidence review and manuscript workspace.">
+  <title>ResearchForge — Research Command Centre</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">RF</div>
+        <div>
+          <div class="brand-name">ResearchForge</div>
+          <div class="brand-sub">Research command centre</div>
+        </div>
+      </div>
+
+      <div class="side-project">
+        <div class="eyebrow">Active project</div>
+        <div class="side-project-title" id="side-project-title">Loading…</div>
+        <div class="side-project-phase" id="side-project-phase"></div>
+      </div>
+
+      <nav class="nav" aria-label="Workspace">
+        <button class="nav-item is-active" type="button" data-view="overview">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          Overview
+        </button>
+        <button class="nav-item" type="button" data-view="review">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Evidence Review <span class="nav-badge" id="nav-pending" hidden></span>
+        </button>
+        <button class="nav-item" type="button" data-view="library">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Source Library
+        </button>
+        <div class="nav-sep"></div>
+        <button class="nav-item" type="button" data-view="synthesis">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          Literature Synthesis
+        </button>
+        <button class="nav-item" type="button" data-view="gaps">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+          Research Gaps
+        </button>
+        <button class="nav-item" type="button" data-view="manuscript">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+          Manuscript
+        </button>
+        <button class="nav-item" type="button" data-view="reviews">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Reviews
+        </button>
+        <button class="nav-item" type="button" data-view="export">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export
+        </button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="side-live">
+          <span class="connection" id="sidebar-connection"><span class="dot"></span><span id="sidebar-connection-text">Connecting</span></span>
+          <span class="muted" id="app-version">v0.1.0</span>
+        </div>
+        <p class="foot-note">Local-first. Human decisions only.</p>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="page-context">
+          <div class="crumbs"><span id="crumb-workspace">Workspace</span><span class="crumb-sep">/</span><span id="crumb-page">Overview</span></div>
+          <h1 id="page-title">Overview</h1>
+        </div>
+        <div class="top-actions">
+          <span class="connection connection-top" id="connection"><span class="dot"></span><span id="connection-text">Connecting…</span></span>
+          <label class="reviewer-control" for="reviewer-input">
+            <span>Reviewer</span>
+            <input id="reviewer-input" type="text" maxlength="120"
+                   placeholder="Set your name" autocomplete="name">
+          </label>
+          <button class="icon-button" id="theme-toggle" type="button"
+                  aria-label="Switch colour theme" title="Switch colour theme">☾</button>
+        </div>
+      </header>
+
+      <div class="banner" id="error-banner" hidden role="alert">
+        <span id="error-text"></span>
+        <button type="button" class="text-button" id="error-retry">Retry</button>
+      </div>
+
+      <main class="view-root">
+        <!-- ------------------------------------------------------- Overview -->
+        <section class="view is-active" id="view-overview" aria-labelledby="page-title">
+          <div class="hero card">
+            <div class="hero-main">
+              <div class="eyebrow">Research project</div>
+              <h2 id="ov-title">Loading workspace…</h2>
+              <p class="hero-description" id="ov-description"></p>
+              <div class="hero-meta">
+                <span class="chip chip-phase" id="ov-phase">Stage unavailable</span>
+                <span class="chip" id="ov-workspace"></span>
+              </div>
+            </div>
+            <div class="hero-actions">
+              <button type="button" class="button button-primary" data-go="review">Review evidence</button>
+              <button type="button" class="button" data-go="library">Browse sources</button>
+            </div>
+          </div>
+
+          <div class="stat-row" aria-label="Review statistics">
+            <div class="stat card"><div class="stat-label">Pending review</div><div class="stat-value" id="ov-pending">–</div><div class="stat-hint">candidates awaiting a human decision</div></div>
+            <div class="stat card"><div class="stat-label">Approved</div><div class="stat-value stat-approve" id="ov-approved">–</div><div class="stat-hint">approved evidence candidates</div></div>
+            <div class="stat card"><div class="stat-label">Rejected</div><div class="stat-value stat-reject" id="ov-rejected">–</div><div class="stat-hint">rejected candidates</div></div>
+            <div class="stat card"><div class="stat-label">Sources</div><div class="stat-value" id="ov-sources">–</div><div class="stat-hint" id="ov-source-detail">imported research material</div></div>
+          </div>
+
+          <div class="dash-grid">
+            <section class="card panel-block">
+              <div class="block-head"><h3>Research pipeline</h3><span class="muted">Derived from stored records</span></div>
+              <div class="pipeline" id="ov-pipeline">
+                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+              </div>
+            </section>
+            <section class="card panel-block attention-block">
+              <div class="block-head"><h3>Needs attention</h3><span class="muted" id="ov-blocker-count"></span></div>
+              <div id="ov-blockers" class="blocker-list"><div class="skeleton"></div></div>
+            </section>
+            <section class="card panel-block activity-block">
+              <div class="block-head"><h3>Recent activity</h3><span class="muted">Real record timestamps</span></div>
+              <div id="ov-activity" class="activity-list"><div class="skeleton"></div></div>
+            </section>
+            <section class="card panel-block shortcuts-block">
+              <div class="block-head"><h3>Workspace</h3></div>
+              <div class="shortcut-grid">
+                <button type="button" class="shortcut" data-go="review"><span class="shortcut-title">Evidence Review</span><span class="shortcut-desc">Read candidates, verify provenance, decide</span></button>
+                <button type="button" class="shortcut" data-go="library"><span class="shortcut-title">Source Library</span><span class="shortcut-desc">Inspect imported papers and source status</span></button>
+              </div>
+              <div class="source-split" id="ov-source-split"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- -------------------------------------------------- Evidence review -->
+        <section class="view" id="view-review" hidden>
+          <div class="workspace-grid">
+            <section class="card panel sources-panel">
+              <div class="block-head"><h3>Sources</h3><span class="muted" id="source-count">–</span></div>
+              <button class="source-item source-all" type="button" id="source-all">
+                <span class="source-title">All sources</span>
+                <span class="source-sub">Every imported paper</span>
+              </button>
+              <div class="source-list" id="source-list"></div>
+            </section>
+
+            <section class="card panel queue-panel">
+              <div class="block-head"><h3>Review queue</h3><span class="muted" id="queue-count">–</span></div>
+              <div class="queue-controls">
+                <div class="segmented" role="tablist" aria-label="Decision filter">
+                  <button type="button" role="tab" data-decision="pending" class="is-active">Pending</button>
+                  <button type="button" role="tab" data-decision="approved">Approved</button>
+                  <button type="button" role="tab" data-decision="rejected">Rejected</button>
+                  <button type="button" role="tab" data-decision="all">All</button>
+                </div>
+                <div class="filter-row">
+                  <select id="classification-filter" aria-label="Classification filter"><option value="">All classifications</option></select>
+                  <input id="search-input" type="search" placeholder="Search passages…" aria-label="Search candidates">
+                </div>
+              </div>
+              <div class="candidate-list" id="candidate-list">
+                <div class="skeleton-list"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+              </div>
+              <div class="pager">
+                <button type="button" class="pager-button" id="page-prev" disabled>← Prev</button>
+                <span class="muted" id="page-label">–</span>
+                <button type="button" class="pager-button" id="page-next" disabled>Next →</button>
+              </div>
+            </section>
+
+            <section class="card panel reader-panel">
+              <div class="block-head"><h3>Passage</h3>
+                <div class="reader-nav">
+                  <button type="button" class="icon-button" id="candidate-prev" aria-label="Previous candidate" title="Previous candidate">←</button>
+                  <button type="button" class="icon-button" id="candidate-next" aria-label="Next candidate" title="Next candidate">→</button>
+                </div>
+              </div>
+              <div class="reader-empty" id="reader-empty">
+                <div class="empty-mark" aria-hidden="true">◇</div>
+                <h3>Select a candidate</h3>
+                <p>Read a pending passage in full, verify its provenance and record a human decision.</p>
+              </div>
+              <article class="reader" id="reader" hidden>
+                <div class="provenance" id="provenance"></div>
+                <h3 class="passage-title" id="passage-title"></h3>
+                <div class="passage" id="candidate-text"></div>
+                <details class="context-block" id="context-block">
+                  <summary>Enclosing paragraph context</summary>
+                  <div class="context-text" id="paragraph-text"></div>
+                </details>
+                <dl class="meta-grid" id="meta-grid"></dl>
+                <div class="decision-panel" id="decision-panel">
+                  <div class="decision-head">
+                    <div>
+                      <div class="eyebrow">Human decision</div>
+                      <div class="decision-state" id="decision-state">Pending review</div>
+                    </div>
+                    <a class="text-button" id="document-link" target="_blank" rel="noopener noreferrer">Open source document</a>
+                  </div>
+                  <div class="reviewer-line">Reviewer: <strong id="decision-reviewer">not set</strong> <span class="muted">— set your name in the header</span></div>
+                  <div class="decision-actions">
+                    <button type="button" class="button button-reject" id="reject-button" disabled>Reject passage</button>
+                    <button type="button" class="button button-approve" id="approve-button" disabled>Approve as evidence</button>
+                  </div>
+                  <p class="hint" id="decision-hint">Set a reviewer identity in the header to enable decisions.</p>
+                </div>
+                <div class="decided-box" id="decided-box" hidden></div>
+              </article>
+            </section>
+          </div>
+        </section>
+
+        <!-- ----------------------------------------------------- Source library -->
+        <section class="view" id="view-library" hidden>
+          <div class="library-layout">
+            <section class="card panel library-main">
+              <div class="block-head">
+                <h2>Source library</h2>
+                <button type="button" class="button button-primary" id="import-open">Import documents</button>
+              </div>
+              <div class="import-panel" id="import-panel" hidden>
+                <div class="drop-zone" id="drop-zone">
+                  <input id="import-files" type="file" multiple
+                         aria-label="Choose documents to import"
+                         accept=".pdf,.docx,.txt,.md,.csv,.bib">
+                  <div class="drop-icon" aria-hidden="true">⇪</div>
+                  <div class="drop-title">Drop files here or choose files</div>
+                  <div class="drop-hint">PDF, DOCX, TXT, Markdown, CSV, BibTeX · max 50 MB per file · nothing is approved automatically</div>
+                </div>
+                <div class="import-selected" id="import-selected"></div>
+                <div class="import-controls">
+                  <label class="field compact"><span>Provenance</span>
+                    <select id="import-provenance">
+                      <option value="researcher">researcher</option>
+                      <option value="other">other</option>
+                      <option value="zotero">zotero</option>
+                      <option value="perplexity">perplexity</option>
+                      <option value="gemini">gemini</option>
+                      <option value="chatgpt">chatgpt</option>
+                    </select>
+                  </label>
+                  <label class="field compact"><span>Evidence status</span>
+                    <select id="import-status">
+                      <option value="SEARCH RESULT ONLY">SEARCH RESULT ONLY</option>
+                      <option value="METADATA VERIFIED">METADATA VERIFIED</option>
+                      <option value="ABSTRACT ONLY">ABSTRACT ONLY</option>
+                      <option value="FULL TEXT READ">FULL TEXT READ</option>
+                      <option value="GREY LITERATURE">GREY LITERATURE</option>
+                    </select>
+                  </label>
+                  <div class="wf-actions">
+                    <button type="button" class="button button-quiet" id="import-cancel">Cancel</button>
+                    <button type="button" class="button button-primary" id="import-run" disabled>Import selected</button>
+                  </div>
+                </div>
+                <div class="import-results" id="import-results"></div>
+              </div>
+              <div class="library-toolbar">
+                <input id="lib-search" type="search" placeholder="Search title, author, DOI, filename or source ID…" aria-label="Search sources">
+                <select id="lib-category" aria-label="Filter by category">
+                  <option value="">All categories</option>
+                  <option value="external_literature">External literature</option>
+                  <option value="research_brief">Research brief</option>
+                  <option value="other">Other material</option>
+                </select>
+                <select id="lib-status" aria-label="Filter by evidence status"><option value="">All statuses</option></select>
+                <select id="lib-availability" aria-label="Filter by full text">
+                  <option value="">All availability</option>
+                  <option value="full">Full text available</option>
+                  <option value="metadata">Metadata only</option>
+                </select>
+                <select id="lib-extraction" aria-label="Filter by extraction state">
+                  <option value="">All extraction states</option>
+                  <option value="COMPLETED">Extracted</option>
+                  <option value="EMPTY">Empty extraction</option>
+                  <option value="FAILED">Extraction failed</option>
+                  <option value="UNSUPPORTED">Unsupported</option>
+                  <option value="none">Not extracted</option>
+                </select>
+                <select id="lib-validation" aria-label="Filter by validation">
+                  <option value="">All validation</option>
+                  <option value="PASS">Validation PASS</option>
+                  <option value="ERROR">Validation ERROR</option>
+                </select>
+                <select id="lib-sort" aria-label="Sort sources">
+                  <option value="import">Import order</option>
+                  <option value="title">Title</option>
+                  <option value="year">Year</option>
+                </select>
+              </div>
+              <div class="library-count muted" id="library-count">–</div>
+              <div class="library-list" id="library-list"></div>
+            </section>
+            <aside class="card panel library-detail" id="library-detail">
+              <div class="empty small">Select a source to see its metadata and extraction status.</div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- ------------------------------------------------------- Synthesis -->
+        <section class="view" id="view-synthesis" hidden>
+          <div class="workflow-hero card">
+            <div>
+              <div class="eyebrow">Literature synthesis</div>
+              <h2>Evidence synthesis workspace</h2>
+              <p class="wf-lede" id="synth-summary">Loading synthesis state…</p>
+            </div>
+            <div class="wf-actions">
+              <label class="toggle-row" title="Explicit opt-in to AI interpretation">
+                <input id="synth-ai" type="checkbox"> AI interpretation
+              </label>
+              <button type="button" class="button" id="synth-run">Run synthesis</button>
+              <button type="button" class="button button-primary" id="synth-approve">Approve synthesis</button>
+            </div>
+          </div>
+          <div class="wf-grid">
+            <section class="card panel">
+              <div class="block-head"><h3>Status &amp; provenance</h3></div>
+              <div class="wf-body" id="synth-status"></div>
+              <div class="wf-note" id="synth-note"></div>
+            </section>
+            <section class="card panel wf-main">
+              <div class="block-head"><h3>Evidence supporting this synthesis</h3><span class="muted" id="synth-evidence-count">–</span></div>
+              <div class="evidence-list" id="synth-evidence"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- ------------------------------------------------------------- Gaps -->
+        <section class="view" id="view-gaps" hidden>
+          <div class="workflow-hero card">
+            <div>
+              <div class="eyebrow">Research gaps</div>
+              <h2>Gap analysis workspace</h2>
+              <p class="wf-lede" id="gaps-summary">Loading gap analysis state…</p>
+            </div>
+            <div class="wf-actions">
+              <label class="toggle-row">
+                <input id="gaps-ai" type="checkbox"> AI interpretation
+              </label>
+              <button type="button" class="button" id="gaps-run">Run gap analysis</button>
+              <button type="button" class="button button-primary" id="gaps-approve">Approve analysis</button>
+            </div>
+          </div>
+          <div class="wf-grid">
+            <section class="card panel">
+              <div class="block-head"><h3>Status &amp; uncertainty</h3></div>
+              <div class="wf-body" id="gaps-status"></div>
+              <div class="wf-note" id="gaps-note"></div>
+            </section>
+            <section class="card panel wf-main">
+              <div class="block-head"><h3>Candidate gaps &amp; limitations</h3></div>
+              <div class="evidence-list" id="gaps-content"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- -------------------------------------------------------- Manuscript -->
+        <section class="view" id="view-manuscript" hidden>
+          <div class="workflow-hero card">
+            <div>
+              <div class="eyebrow">Manuscript</div>
+              <h2>Section workspace</h2>
+              <p class="wf-lede" id="ms-summary">Loading manuscript state…</p>
+            </div>
+          </div>
+          <div class="manuscript-layout">
+            <section class="card panel">
+              <div class="block-head"><h3>Paper structure</h3></div>
+              <div class="structure-list" id="ms-structure"></div>
+              <div class="block-head"><h3>Draftable sections</h3></div>
+              <div class="section-list" id="ms-sections"></div>
+            </section>
+            <section class="card panel ms-reader-panel">
+              <div class="block-head">
+                <h3 id="ms-reader-title">Select a section</h3>
+                <div class="reader-nav">
+                  <select id="ms-version-select" aria-label="Draft version"></select>
+                </div>
+              </div>
+              <div class="reader-empty" id="ms-empty">
+                <div class="empty-mark" aria-hidden="true">◇</div>
+                <h3>No section selected</h3>
+                <p>Choose a draftable section to read versions, citations and review feedback.</p>
+              </div>
+              <article class="reader" id="ms-reader" hidden>
+                <div class="provenance" id="ms-provenance"></div>
+                <h3 class="passage-title" id="ms-section-title"></h3>
+                <div class="passage" id="ms-prose"></div>
+                <div class="ms-meta" id="ms-meta"></div>
+                <details class="context-block" id="ms-unsupported-block">
+                  <summary>Unsupported statements / citations</summary>
+                  <div class="context-text" id="ms-unsupported"></div>
+                </details>
+                <div class="draft-controls">
+                  <label class="field">
+                    <span>Researcher-provided context (optional)</span>
+                    <textarea id="ms-context" rows="3" placeholder="Context for the draft; never treated as evidence"></textarea>
+                  </label>
+                  <div class="wf-actions">
+                    <button type="button" class="button" id="ms-draft">Draft new version</button>
+                    <button type="button" class="button button-primary" id="ms-approve">Approve selected version</button>
+                  </div>
+                  <p class="hint" id="ms-hint">Drafting uses the existing provider; approval requires a reviewer.</p>
+                </div>
+              </article>
+            </section>
+          </div>
+        </section>
+
+        <!-- ----------------------------------------------------------- Reviews -->
+        <section class="view" id="view-reviews" hidden>
+          <div class="workflow-hero card">
+            <div>
+              <div class="eyebrow">Independent reviews</div>
+              <h2>Review workspace</h2>
+              <p class="wf-lede" id="reviews-summary">Loading reviews…</p>
+            </div>
+            <div class="wf-actions">
+              <label class="field compact">
+                <span>Section</span>
+                <select id="review-section"></select>
+              </label>
+              <label class="field compact">
+                <span>Version</span>
+                <input id="review-version" type="number" min="1" placeholder="latest">
+              </label>
+              <label class="toggle-row"><input id="review-ai" type="checkbox"> AI review</label>
+              <button type="button" class="button" id="review-run">Run review</button>
+            </div>
+          </div>
+          <div class="reviews-layout">
+            <section class="card panel">
+              <div class="block-head"><h3>Review reports</h3><span class="muted" id="reviews-count">–</span></div>
+              <div class="review-list" id="reviews-list"></div>
+            </section>
+            <section class="card panel">
+              <div class="block-head"><h3 id="review-detail-title">Review detail</h3></div>
+              <div class="review-detail" id="reviews-detail">
+                <div class="empty small">Select a review report.</div>
+              </div>
+            </section>
+          </div>
+          <section class="card panel external-panel">
+            <div class="block-head"><h3>Add external review (manual import)</h3></div>
+            <div class="external-form">
+              <label class="field">
+                <span>Review report</span>
+                <select id="external-review-id"></select>
+              </label>
+              <label class="field compact">
+                <span>Platform</span>
+                <select id="external-platform">
+                  <option value="gemini">Gemini</option>
+                  <option value="perplexity">Perplexity</option>
+                  <option value="chatgpt">ChatGPT</option>
+                  <option value="other">Other</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Load critique from a UTF-8 text file (optional)</span>
+                <input id="external-file" type="file" accept=".txt,.md,text/plain">
+              </label>
+              <label class="field">
+                <span>Reviewer name</span>
+                <input id="external-reviewer" type="text" placeholder="Who is importing this critique?">
+              </label>
+              <label class="field">
+                <span>Pasted critique</span>
+                <textarea id="external-text" rows="5" placeholder="Paste the external critique verbatim"></textarea>
+              </label>
+              <div class="wf-actions">
+                <button type="button" class="button" id="external-add">Record external review</button>
+              </div>
+              <p class="hint">External text is stored separately and never accepted automatically.</p>
+            </div>
+          </section>
+        </section>
+
+        <!-- ------------------------------------------------------------ Export -->
+        <section class="view" id="view-export" hidden>
+          <div class="workflow-hero card">
+            <div>
+              <div class="eyebrow">DOCX export</div>
+              <h2>Manuscript export</h2>
+              <p class="wf-lede" id="export-summary">Checking export readiness…</p>
+            </div>
+          </div>
+          <div class="export-layout">
+            <section class="card panel">
+              <div class="block-head"><h3>Readiness checklist</h3></div>
+              <div class="checklist" id="export-readiness"></div>
+              <div class="block-head"><h3>Included sections</h3></div>
+              <div class="export-sections" id="export-sections"></div>
+              <div class="block-head"><h3>Excluded sections</h3></div>
+              <div class="export-excluded" id="export-excluded"></div>
+            </section>
+            <section class="card panel">
+              <div class="block-head"><h3>Export settings</h3></div>
+              <div class="external-form">
+                <label class="field">
+                  <span>Document title</span>
+                  <input id="export-title" type="text" value="Manuscript">
+                </label>
+                <label class="field">
+                  <span>Output filename</span>
+                  <input id="export-filename" type="text" value="manuscript.docx">
+                </label>
+                <label class="toggle-row"><input id="export-force" type="checkbox"> Overwrite an existing export</label>
+                <div class="wf-actions">
+                  <button type="button" class="button button-primary" id="export-run">Generate DOCX</button>
+                </div>
+                <p class="hint">Only APPROVED section versions are exported; fingerprints are verified first.</p>
+              </div>
+              <div class="block-head"><h3>Generated exports</h3></div>
+              <div class="export-list" id="export-list"></div>
+              <div class="export-result" id="export-result"></div>
+            </section>
+          </div>
+        </section>
+        </main>
+    </div>
+  </div>
+
+  <div class="toast-region" id="toast-region" aria-live="polite"></div>
+
+  <div class="modal-backdrop" id="modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="eyebrow" id="modal-kicker">Confirm decision</div>
+      <h2 id="modal-title">Record decision?</h2>
+      <p id="modal-body"></p>
+      <div class="modal-actions">
+        <button type="button" class="button button-quiet" id="modal-cancel">Cancel</button>
+        <button type="button" class="button" id="modal-confirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
